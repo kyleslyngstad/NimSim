@@ -1,42 +1,21 @@
-import itertools
-import os
+#####
+# v. 0.0.1
+# 03/26/2018
+#####
+import pygame
+from setup import master, clock, endGameLoop, rectSettings, worldMap
+from event import eventQueue
 
-#Person Class
-class Person():
-    idCount = itertools.count()
-    personList = []
-    def __init__(self):
-        self.pId = next(Person.idCount)
-        self.wealth = 0
-        self.foodSupply = 0
-        self.houseStatus = 0
-        self.skills = {"farming":0, "building":0}
-        #self.city = 'None'
-        Person.personList.append(self)
+while not endGameLoop:
+    #Draw current scene.
+    worldMap.drawWorldMap()
+    #master.sceneDict[master.sceneId].drawScene(master, rectSettings)
+    #Run event and end if user quits.
+    endGameLoop = eventQueue()
+    #Update current scene.
+    #master.sceneDict[master.sceneId].update(master, rectSettings, seasonSettings)
 
-    def hunger(self):
-        return 50 - self.foodSupply*5
+    pygame.display.flip()
+    clock.tick(60)
 
-    def shelter(self):
-        return 90 - self.houseStatus*30
-
-#Create a function that modifies each birth with different stats.
-def personRand():
-    Person()
-
-#Create a function that starts a city population
-def startCity(popCount, cityName): #Later add stoneDensity and foodDensity to measure the abundance of those resources.
-    #run the personRand
-    for p in range(popCount):
-        personRand()
-
-    f = "./%s" % cityName
-    try: os.mkdir(f)
-    except: pass
-
-    #write the people to a .csv
-    #name the file the cityName+turn# so Seattle_0
-
-#def turnCity(): #Reads in the city.csv and applies the logic for 1 turn then writes the results to a new.csv (Seattle_1.csv)
-
-startCity(5,'Seattle')
+pygame.quit()
