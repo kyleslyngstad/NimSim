@@ -21,3 +21,4 @@ master = Master()
 
 #Initialize WorldMap Object
 worldMap = WorldMap(rectSettings)
+worldMap.generateRandomMap()

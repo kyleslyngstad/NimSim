@@ -8,7 +8,7 @@ from event import eventQueue
 
 while not endGameLoop:
     #Draw current scene.
-    worldMap.drawWorldMap()
+    worldMap.drawWorldMap(master)
     #master.sceneDict[master.sceneId].drawScene(master, rectSettings)
     #Run event and end if user quits.
     endGameLoop = eventQueue()

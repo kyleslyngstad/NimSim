@@ -21,9 +21,13 @@ class RectSettings():
         self.sidebarWidth = 224
         self.sidebarRect = pygame.Rect((self.screenRect.width - self.sidebarWidth, 0),(self.sidebarWidth,self.screenRect.height))
         self.sidebarRosterRowHeight = 100
-        self.hexRadius = 80
+
 
 class Master():
     def __init__(self):
         self.mousePos = None
         self.dayCount = 1
+        self.mapScrollLeft = False
+        self.mapScrollRight = False
+        self.mapScrollUp = False
+        self.mapScrollDown = False

@@ -1,33 +1,59 @@
 import pygame
 from math import sqrt
+import random
+
+class MapLocation():
+    def __init__(self):
+        self.x = 0
+        self.y = 0
 
 class WorldMap():
     def __init__(self, rectSettings):
         self.screen = rectSettings.screen
         self.edgeColor = rectSettings.WHITE
+        self.backgroundColor = rectSettings.BLACK
         self.rectSize = rectSettings.sidebarRect
-        self.mapLoc = (0,0)
-        self.hexRadius = rectSettings.hexRadius
+        self.mapLoc = MapLocation()
         self.hexList = []
 
-    def drawWorldMap(self):
-        for i in range(3):
-            for j in range(4):
-                self.hexList.append(Hexagon(self.hexRadius,i,j))
-        for h in self.hexList:
-            h.updatePointList()
-            pygame.draw.lines(self.screen, self.edgeColor, True, h.pointList)
+    def drawWorldMap(self, master):
+        #Clear Screen
+        self.screen.fill(self.backgroundColor)
 
-    def drawHex(self):
-        pygame.draw.lines(self.screen, self.edgeColor, True, [(200,100),(400,300),(300,200)])
+        if master.mapScrollLeft:
+            self.mapLoc.x -= 1
+        if master.mapScrollRight:
+            self.mapLoc.x += 1
+        if master.mapScrollUp:
+            self.mapLoc.y -= 1
+        if master.mapScrollDown:
+            self.mapLoc.y += 1
+        for h in self.hexList:
+            self.drawTile(self.mapLoc, h)
+
+    def drawTile(self, mapLoc, hexagon):
+        hexagon.updatePointList()
+        adjustedHex = []
+        for i in range(6):
+            tempx = hexagon.pointList[i][0] - mapLoc.x
+            tempy = hexagon.pointList[i][1] - mapLoc.y
+            adjustedHex.append((tempx,tempy))
+        pygame.draw.lines(self.screen, self.edgeColor, True, adjustedHex)
 
     def generateRandomMap(self):
+        numRows = random.randrange(3,5) #Generate 3-5 Rows
+        numCols = random.randrange(3,5) #Generate 3-5 Cols
+        for i in range(numRows):
+            for j in range(numCols):
+                self.hexList.append(Hexagon(i,j))
+
+    def generateRandomTile(self):
         pass
 
 
 class Hexagon():
-    def __init__(self, hexRadius, hexRow, hexCol):
-        self.circumRad = hexRadius
+    def __init__(self, hexRow, hexCol):
+        self.circumRad = 80
         self.inRad = self.circumRad * 2/sqrt(3)
         #if((hexRow + hexCol) % 2 == 1):
             #print('Error - Invalid Hexagon Placement')
@@ -35,11 +61,9 @@ class Hexagon():
         self.row = hexRow
         self.col = hexCol
         self.pointList = None
-        self.centerx = None
-        self.centery = None
+        self.centerHex()
 
     def updatePointList(self):
-        self.centerHex()
         self.centerLeft = (self.centerx - self.circumRad, self.centery)
         self.topLeft = (self.centerx - self.circumRad/2, self.centery - self.inRad)
         self.topRight = (self.centerx + self.circumRad/2, self.centery - self.inRad)
@@ -54,16 +78,5 @@ class Hexagon():
             self.centerx = self.circumRad + self.circumRad*self.col*1.5
             self.centery = self.inRad + self.inRad*self.row*2
         else:
-            self.centerx = self.circumRad + self.circumRad*1.5*self.col 
-            self.centery = self.inRad*(self.row+1)*2
-
-    def drawHex(self,x,y):
-        pass
-        #calculate 6 vertices
-        #pygame.draw.lines()
-        #draw angled line
-        #draw angled line
-        #draw angled line
-        #draw angled line
-        #draw straight top line
-        #draw straight bottom line
+            self.centerx = self.circumRad + self.circumRad*1.5*self.col
+            self.centery = self.inRad*(self.row)*2
